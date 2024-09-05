@@ -1,15 +1,24 @@
 // -------------------Exercise 1-------------------
-let calculator = {
-    add: function(x, y) {
-      return x + y;
-    },
-    subtract: function(x, y) {
-      return x - y;
+// Object declaration
+let person = {
+    // Properties
+    firstName: "Tuan",
+    lastName: "Ha",
+    age: 27,
+  
+    // Method (function inside object)
+    greet: function() {
+      console.log("Hello, my name is " + this.firstName + " " + this.lastName);
     }
   };
   
-  console.log(calculator.add(5, 3));
-  console.log(calculator.subtract(9, 4));
+  // Accessing object properties
+  console.log(person.firstName); 
+  console.log(person.age); 
+  
+  // Calling object method
+  person.greet(); 
+  
   
 // -------------------Exercise 2-------------------
 const sum = (arr) => {
