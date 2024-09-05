@@ -1,3 +1,16 @@
+// -------------------Exercise 1-------------------
+let calculator = {
+    add: function(x, y) {
+      return x + y;
+    },
+    subtract: function(x, y) {
+      return x - y;
+    }
+  };
+  
+  console.log(calculator.add(5, 3));
+  console.log(calculator.subtract(9, 4));
+  
 // -------------------Exercise 2-------------------
 const sum = (arr) => {
     let total = 0;
