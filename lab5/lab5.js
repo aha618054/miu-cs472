@@ -42,16 +42,15 @@ class Meditation {
       resolve({ prime: true });
     });
   };
-  const testPrime = async (n) => {
-    console.log('start');
-    try {
+  const testPrime = async(n) => {
+    console.log('start')
+    try{
       const result = await isPrime(n);
       console.log(result);
-    } catch (error) {
-      console.error(error);
+    } catch(err) {
+      console.log(err)
     }
-    console.log('end');
-  };
+  }
   
   // Testing with async/await
   testPrime(7);  // Prime number
