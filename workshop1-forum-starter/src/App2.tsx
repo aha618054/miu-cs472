@@ -1,66 +1,60 @@
 import './App.scss';
 import avatar from './images/bozai.png';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import _ from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
+import Item from './Item';
 
-// Comment List data
-const defaultList = [
-  {
-    rpid: 3,
-    user: {
-      uid: '13258165',
-      avatar: avatar,
-      uname: 'Jay Zhou',
-    },
-    content: 'Nice, well done',
-    ctime: '10-18 08:15',
-    like: 88,
-  },
-  {
-    rpid: 2,
-    user: {
-      uid: '36080105',
-      avatar: avatar,
-      uname: 'Song Xu',
-    },
-    content: 'I search for you thousands of times, from dawn till dusk.',
-    ctime: '11-13 11:29',
-    like: 88,
-  },
-  {
-    rpid: 1,
-    user: {
-      uid: '30009257',
-      avatar,
-      uname: 'John',
-    },
-    content: 'I told my computer I needed a break... now it will not stop sending me vacation ads.',
-    ctime: '10-19 09:00',
-    like: 66,
-  },
-];
+type Comment = {
+  rpid: string,
+  user: User,
+  content: string,
+  ctime: string,
+  like: number
+}
 
 // current logged-in user info
-const user = {
-  uid: '30009257',
+type User = {
+  uid: string,
+  avatar: string,
+  uname: string,
+};
+// current logged-in user info
+const user: User = {
+  uid: '36080105',
   avatar,
   uname: 'John',
 };
 
-const App = () => {
-  const [comments, setComments] = useState(defaultList);
+const App2 = () => {
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState(''); 
   const [activeTab, setActiveTab] = useState('Top');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const deleteComment = (rpid: number) => {
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch('http://localhost:3004/comments');
+        const data = await response.json();
+        setComments(data); // Set comments with fetched data
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    fetchComments();
+  }, []);
+
+  const deleteComment = (rpid: string) => {
     const updatedComments = comments.filter((comment) => comment.rpid !== rpid);
     setComments(updatedComments);
   };
 
   const handlePostComment = () => {
     if (newComment.trim()) {
-      const newCommentData = {
-        rpid: Date.now(),
+      const newCommentData: Comment = {
+        rpid: uuidv4.toString(),
         user: {
           uid: user.uid,
           avatar: user.avatar,
@@ -73,6 +67,10 @@ const App = () => {
 
       setComments([newCommentData, ...comments]); 
       setNewComment('');
+
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
     }
   };
 
@@ -132,6 +130,7 @@ const App = () => {
               placeholder="Tell something..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)} // Update the state when the user types
+              ref={textareaRef}
             />
             <div className='reply-box-send' onClick={handlePostComment}>
               <div className='end-text'>
@@ -144,37 +143,7 @@ const App = () => {
         {/* Comment list */}
         <div className="reply-list">
           {getSortedComments().map((comment: any) => (
-            <div className="reply-item" key={comment.rpid}>
-              <div className="root-reply-avatar">
-                <div className="bili-avatar">
-                  <img
-                    className="bili-avatar-img"
-                    src={comment.user.avatar || './images/bozai.png'}
-                    alt={`${comment.user.uname}'s avatar`}
-                  />
-                </div>
-              </div>
-
-              <div className="content-wrap">
-                <div className="user-info">
-                  <div className="user-name">{comment.user.uname}</div>
-                </div>
-                <div className="root-reply">
-                  <span className="reply-content">{comment.content}</span>
-                  <div className="reply-info">
-                    <span className="reply-time">{comment.ctime}</span>
-                    <span className="reply-time">Like: {comment.like}</span>
-                    <span
-                      className="delete-btn"
-                      onClick={() => deleteComment(comment.rpid)}
-                      style={{ cursor: 'pointer', color: 'red' }}
-                    >
-                      Delete
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Item user={user} item={comment} onDel={deleteComment}/>
           ))}
         </div>
       </div>
@@ -182,4 +151,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App2;
