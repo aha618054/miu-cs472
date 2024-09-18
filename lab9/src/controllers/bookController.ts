@@ -11,6 +11,7 @@ export const createBook = (req: Request, res: Response): void => {
 };
 
 export const getBooks = (req: Request, res: Response): void => {
+  console.log(books);
   res.json(books);
 };
 
