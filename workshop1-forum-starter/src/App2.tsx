@@ -39,7 +39,7 @@ const App2 = () => {
         const data = await response.json();
         setComments(data); // Set comments with fetched data
       } catch (error) {
-        console.error('Error fetching comments:', error);
+        throw new Error('can not fetch data from api')
       }
     };
 
@@ -142,7 +142,7 @@ const App2 = () => {
 
         {/* Comment list */}
         <div className="reply-list">
-          {getSortedComments().map((comment: any) => (
+          {getSortedComments().map((comment: Comment) => (
             <Item user={user} item={comment} onDel={deleteComment}/>
           ))}
         </div>
