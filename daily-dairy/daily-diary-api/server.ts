@@ -25,5 +25,5 @@ server.use(errorHandler);
 
 // bootstrap application
 server.listen(8080, () =>
-    console.log("Server is running...")
+    console.log("Server is running....")
 );
